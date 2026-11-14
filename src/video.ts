@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // Compone las escenas de un guion y las renderiza a MP4 vertical.
 //
-//   bun video.ts <ruta-al-proyecto> [--fps 30] [--rapido] [--solo hook] [--out <carpeta>]
+//   bun src/video.ts <ruta-al-proyecto> [--fps 30] [--rapido] [--solo hook] [--out <carpeta>]
 //
 // Busca `<proyecto>/video/guion.ts`. Cada entrada del guion nombra una plantilla
 // de `plantillas-video/` y le pasa sus datos. La duración en segundos vive en el
@@ -58,7 +58,7 @@ for (let i = 0; i < argv.length; i++) {
 }
 
 const uso =
-  "Uso: bun video.ts <ruta-al-proyecto> [--fps 30] [--rapido] " +
+  "Uso: bun src/video.ts <ruta-al-proyecto> [--fps 30] [--rapido] " +
   "[--solo <plantilla>] [--out <carpeta>]";
 
 const rutaProyecto = libres[0];

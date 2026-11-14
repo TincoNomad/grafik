@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // Renderiza las piezas gráficas de un proyecto.
 //
-//   bun build.ts <ruta-al-proyecto> [--tamano post|story|cuadrado] [--out <carpeta>]
+//   bun src/build.ts <ruta-al-proyecto> [--tamano post|story|cuadrado] [--out <carpeta>]
 //
 // Busca `<proyecto>/grafik/piezas/*.ts`, y cada pieza devuelve uno o varios
 // slides. El orden del arreglo es el orden del carrusel.
@@ -34,7 +34,7 @@ for (let i = 0; i < argv.length; i++) {
 }
 
 const tamanos = Object.keys(TAMANOS).join("|");
-const uso = `Uso: bun build.ts <ruta-al-proyecto> [--tamano ${tamanos}] [--out <carpeta>]`;
+const uso = `Uso: bun src/build.ts <ruta-al-proyecto> [--tamano ${tamanos}] [--out <carpeta>]`;
 
 const rutaProyecto = libres[0];
 if (!rutaProyecto) {
