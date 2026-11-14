@@ -66,6 +66,7 @@ un escalón de color justo en el empalme.
 
 ## Licencia
 
-AGPL-3.0. `vendor/shapes` es MIT de Remotion (JonnyBurger): al actualizarlo hay
-que conservar sus `LICENSE*.md`. Hoy `vendor/` y `src/formas.ts` no los importa
-nadie; son material de referencia, no código vivo.
+AGPL-3.0. Sin código de terceros: el antiguo `vendor/shapes` (MIT de Remotion)
+se borró porque nadie lo importaba; las dos formas que hacían falta viven en
+`src/formas.ts`, escritas aquí. Si vuelve a hacer falta una, se copia otra vez
+del commit que quedó anotado en el historial de git.

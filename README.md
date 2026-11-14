@@ -19,9 +19,12 @@ Los dos comparten `render.ts`, `base.css` y el mismo contexto de plantilla.
 src/               el motor: render, tamaños, tiempo y orden
 plantillas/        plantillas de imagen, listas para copiar a un proyecto
 plantillas-video/  plantillas de video, las carga `video.ts` por nombre
-vendor/            código ajeno vendorizado, con su licencia al lado
 proyectos/         el contenido de cada video
 ```
+
+`src/formas.ts` no lo importa nadie todavía: expone `poligono(lados, r)` y
+`estrella(puntas, r)` como path SVG, para la plantilla que las necesite. Tiene
+su propio chequeo: `bun src/formas.ts`.
 
 Un proyecto vive en `proyectos/<nombre>/` y tiene `video/guion.ts` más sus
 assets. `proyectos/catalogo-video` es el ejemplo completo: mezcla tramos de
