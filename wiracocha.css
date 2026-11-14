@@ -1,0 +1,367 @@
+/* Identidad de Wiracocha para video.
+   Los colores son los de wiracocha-web/src/styles/tokens.css, sin inventar nada.
+   Las fuentes son la pila del sistema porque el sitio tampoco carga Oswald. */
+
+:root {
+  --oro: #d4af37;
+  --naranja: #f27d42;
+  --terracota: #a9442b;
+  --fondo: #2f2e2b;
+  --hueso: #d9d9d9;
+  --carbon: #2e1e1a;
+  --verde: #3ecf6a;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Inter", sans-serif;
+}
+
+.lienzo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--fondo);
+  background-image: var(--fondo-img, none);
+  background-size: cover;
+  background-position: center;
+  color: var(--hueso);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* La tarjeta es la placa de contraste: el fondo tiene estrellas y sin ella el
+   texto no se lee. Sólida, no vidrio: el desenfoque sobre un campo de puntos se
+   ensucia al comprimir en H.264, y sobre negro no aporta nada. */
+.tarjeta {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* La tarjeta solo se usa donde el contenido es una pieza: un bloque de código.
+     Todo lo demás va a sangre contra las estrellas. */
+  justify-content: center;
+  padding: 68px 60px 64px 56px;
+  border-radius: 34px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  /* Un solo acento por escena, en el borde izquierdo. El color lo pone la
+     escena con `--tono`: tres bordes de colores compitiendo no dejan jerarquía. */
+  border-left: 6px solid var(--tono, var(--oro));
+  background: var(--fondo);
+  overflow: hidden;
+}
+
+/* Escena a sangre: sin tarjeta, el texto vive directo sobre las estrellas.
+   Sirve para una sola idea por cuadro; se alterna con las de tarjeta para que
+   el video no se sienta como la misma diapositiva siete veces. */
+.lleno {
+  position: relative;
+  width: 100%;
+}
+.lleno .titulo {
+  font-size: 132px;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  margin-top: 34px;
+}
+.lleno .subtitulo {
+  font-size: 58px;
+}
+.lleno .rotulo {
+  font-size: 34px;
+}
+.lleno .filete {
+  width: 220px;
+  margin-top: 56px;
+}
+
+.escena {
+  position: absolute;
+  inset: 0;
+  padding: 0 96px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  --t: 0;
+  /* Fundido al fondo en las dos puntas: la escena que sale se disuelve en el
+     color del lienzo y la siguiente emerge del mismo color. Como solo se pinta
+     una escena a la vez, un crossfade real no es posible; esto es lo que se
+     parece sin pintar dos capas. `final` no se disuelve para no terminar vacío. */
+  animation: fundidoEntra 0.25s linear both, fundidoSale 0.25s linear forwards;
+  animation-delay:
+    calc(var(--t, 0) * -1s),
+    calc(var(--dur, 999s) - 0.25s - var(--t, 0) * 1s);
+  /* Las animaciones se congelan en el instante que pida el render. */
+  animation-play-state: paused;
+}
+.escena.final {
+  animation: fundidoEntra 0.25s linear both;
+  animation-delay: calc(var(--t, 0) * -1s);
+}
+
+/* El único truco del pipeline.
+   `--d` es cuándo entra el elemento; `--t` es el instante actual de la escena.
+   El retraso negativo deja la animación congelada exactamente en ese punto. */
+.escena .anim {
+  animation-delay: calc(var(--d, 0s) - var(--t, 0) * 1s);
+}
+
+/* La animación va en la clase; el cuándo va en `--d`.
+   Nunca en un `style` inline: el shorthand `animation` reinicia el delay a 0. */
+.entra {
+  animation: entra 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.aparece {
+  animation: aparece 0.6s ease-out both;
+}
+.emerge {
+  animation: emerge 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* --- tipografía ------------------------------------------------------- */
+
+.rotulo {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--oro);
+}
+
+.titulo {
+  font-size: 104px;
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  margin-top: 28px;
+}
+
+.subtitulo {
+  font-size: 52px;
+  font-weight: 400;
+  line-height: 1.25;
+  margin-top: 32px;
+  color: rgba(217, 217, 217, 0.72);
+}
+
+.chico {
+  font-size: 34px;
+  color: rgba(217, 217, 217, 0.55);
+}
+
+.oro {
+  color: var(--oro);
+}
+.naranja {
+  color: var(--naranja);
+}
+
+/* El filete que subraya una idea. Crece de izquierda a derecha. */
+.filete {
+  height: 4px;
+  width: 180px;
+  margin-top: 44px;
+  background: var(--oro);
+  transform-origin: left center;
+  animation: barre 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* --- animaciones reutilizables --------------------------------------- */
+
+/* La escena completa aparece o desaparece contra el fondo del lienzo. */
+@keyframes fundidoEntra {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fundidoSale {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes entra {
+  from {
+    opacity: 0;
+    transform: translateY(46px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes entraOro {
+  from {
+    opacity: 0;
+    transform: translateY(70px);
+    color: var(--oro);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes aparece {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes barre {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes emerge {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Dibuja un trazo SVG: el elemento necesita pathLength="1". */
+@keyframes traza {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.trazo {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: traza 1.1s ease-in-out both;
+}
+
+.lienzo-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 46px;
+  overflow: visible;
+}
+
+/* --- bloque de código ---------------------------------------------- */
+
+.codigo pre {
+  margin-top: 44px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 34px;
+  line-height: 1.62;
+  white-space: pre-wrap;
+  overflow-wrap: normal;
+}
+
+.codigo .ln {
+  display: block;
+}
+
+.codigo .clave {
+  color: var(--naranja);
+}
+
+.codigo .com {
+  color: rgba(217, 217, 217, 0.4);
+}
+
+/* Congelar va al final a propósito. Los `animation` de arriba son un shorthand
+   y vuelven a poner play-state en `running`: si esta regla va antes, las
+   animaciones corren en tiempo real y el render las captura ya terminadas. */
+
+/* Barrido de esquina a esquina. El lienzo entero cruza en diagonal desde abajo
+   a la derecha hasta arriba a la izquierda y tapa todo justo al 50% del
+   recorrido. Por eso el corte entre dos escenas cae cuando está centrado: el
+   fotograma de un lado y del otro son el mismo, y el empalme no se ve.
+   `--d` es cuándo arranca: 0.35s antes del final de la escena que sale, y
+   0.35s antes del inicio de la que entra. */
+@keyframes barridoDiagonal {
+  from {
+    transform: translate(1080px, 1920px);
+  }
+  to {
+    transform: translate(-1080px, -1920px);
+  }
+}
+/* La escalera: seis bandas de 320px, cada una corrida 180px respecto a la de
+   arriba, todas del mismo largo (1984px). Como todas miden igual, la caja que
+   forman es simétrica y el centro del recorrido cae justo donde cada banda
+   cruza el lienzo entero. Ahí se hace el corte. */
+@keyframes barridoEscalera {
+  from {
+    transform: translateX(-1982px);
+  }
+  to {
+    transform: translateX(1982px);
+  }
+}
+.barrido {
+  /* left:0 es el borde del padding box del escenario, o sea el borde del
+     lienzo: el padding de 96px no corre al elemento absoluto. */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1080px;
+  height: 1920px;
+  background: var(--oro);
+  /* Las propiedades van por separado y no con el shorthand `animation`:
+     el shorthand borraría el delay. */
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-delay: calc(var(--d, 0s) - var(--t, 0) * 1s);
+  animation-play-state: paused;
+}
+.barrido.panel {
+  animation-name: barridoDiagonal;
+  animation-duration: var(--db, 0.7s);
+}
+.barrido.escalera {
+  background: none;
+  animation-name: barridoEscalera;
+  animation-duration: var(--db, 1.2s);
+}
+.barrido i {
+  position: absolute;
+}
+.barrido.panel i {
+  /* El inset y el grosor vienen en línea para que se puedan replicar exactos
+     del lado de ffmpeg. */
+  box-sizing: border-box;
+}
+.barrido.escalera i {
+  width: 1984px;
+  height: 320px;
+}
+/* Una escena con barrido no se disuelve: el barrido ya es el empalme, y un
+   fundido la volvería translúcida a mitad del recorrido. */
+.escena:has(.barrido) {
+  animation: none;
+}
+
+/* Congelar va al final a propósito. Los `animation` de arriba son un shorthand
+   y vuelven a poner play-state en `running`: si esta regla va antes, las
+   animaciones corren en tiempo real y el render las captura ya terminadas. */
+.escena *,
+.escena *::before,
+.escena *::after {
+  animation-play-state: paused;
+}
