@@ -57,11 +57,11 @@ Los colores de los marcos y de los seis niveles están escritos en dos lugares:
 `grafik/plantillas-video/barrido.ts` (lado CSS) y `montaje.sh` (lado ffmpeg).
 Si cambias uno, cambia el otro o el corte se ve como un salto de color.
 
-Los colores de ffmpeg (`ORO` y `TERRACOTA` en el script) están corridos a
-propósito: el `color` de ffmpeg y el PNG que sale de Chrome no convierten igual a
-YUV, y los valores exactos de la marca salían ~8 puntos más oscuros. Eso hacía
-un escalón justo en el corte. El carbón de las puertas no lleva corrección porque
-no cruza esa frontera.
+Los colores de ffmpeg (`ORO`, `TERRACOTA` y los de `NIVELES`) hoy son el mismo
+hexadecimal que los del CSS. Una nota anterior decía que estaban corridos 8
+puntos para compensar la conversión a YUV; se midió y no es cierto. Si algún día
+aparece un escalón de color en el corte, se corrige en los dos lados y se
+compara el frame del empalme, no se ajusta a ojo.
 
 Las tomas del demo no son MP4 sueltos: ffmpeg pone la grabación encima de
 `build/placa.png`, en la ventana de 944x1360 que arranca en y=380. Así los tres

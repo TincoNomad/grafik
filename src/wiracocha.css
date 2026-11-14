@@ -74,7 +74,7 @@
 .escena {
   position: absolute;
   inset: 0;
-  padding: 0 96px;
+  padding: 0 165px;
   display: flex;
   flex-direction: column;
   justify-content: center;

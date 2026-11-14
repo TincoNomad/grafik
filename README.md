@@ -178,6 +178,21 @@ Dos figuras:
 | `panel` | Rectángulo de 1080x1920 con cinco bandas de 80px —oro, carbón, terracota, naranja, oro— y centro macizo de carbón. Cruza en diagonal desde la esquina inferior derecha |
 | `escalera` | Seis bandas de 320px corridas 180px cada una, cruzando de izquierda a derecha |
 
+### Todas las transiciones
+
+Están dispersas porque cada mitad la pinta un motor distinto. Esta tabla es el
+mapa:
+
+| Nombre | Tipo | Dirección | Dónde se declara |
+|---|---|---|---|
+| `panel` | Rectángulo con cinco bandas y centro macizo | Diagonal: entra por abajo-derecha, sale por arriba-izquierda | `figura: "panel"` |
+| `escalera` | Seis bandas escalonadas | Horizontal, de izquierda a derecha | `figura: "escalera"` |
+| cortinilla | Cinco barras con degradado, un anillo y un punto | Las barras barren desde la izquierda, escalonadas 60 ms | Plantilla propia: escena de 0.72 s con `tipo: "transicion"` |
+| puertas | Dos paneles de carbón de media pantalla | Del borde al centro, se juntan y se separan | **Solo en `proyectos/catalogo-video/montaje.sh`** |
+
+La cortinilla se marca con `tipo: "transicion"` para que los chequeos de zona
+segura la salten: está hecha para tapar el lienzo, no para respetarlo.
+
 La escalera mide 1984px de ancho por banda y recorre 3964px. No es un capricho:
 a cada altura de la pantalla hay una sola banda, así que en el momento del
 corte **cada banda tiene que cruzar el lienzo entero por su cuenta**. Con bandas

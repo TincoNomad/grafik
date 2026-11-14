@@ -42,24 +42,25 @@ export default (
     css: `
 .barras .titulo { font-size: 88px; margin: 22px 0 0; }
 .barras .lineas { margin-top: 64px; display: flex; flex-direction: column; gap: 54px; }
-.barras .linea { display: flex; align-items: center; gap: 34px; }
+.barras .linea { display: flex; align-items: center; gap: 24px; }
 .barras .quien {
-  width: 190px;
+  width: 150px;
   font-size: 40px;
   font-weight: 700;
   letter-spacing: -.01em;
 }
-.barras .nucleos { display: flex; gap: 16px; }
+/* Las barras se reparten el ancho que queda: así caben con cualquier margen. */
+.barras .nucleos { display: flex; gap: 10px; flex: 1; }
 .barras .nucleos i {
   display: block;
-  width: 104px;
-  height: 104px;
-  border-radius: 14px;
+  flex: 1;
+  height: 64px;
+  border-radius: 12px;
   border: 3px solid rgba(212, 175, 55, .28);
   background: transparent;
 }
 .barras .nucleos i.on { background: var(--tono, var(--oro)); border-color: var(--tono, var(--oro)); }
-.barras .cuenta { font-size: 30px; color: rgba(217, 217, 217, .55); }
+.barras .cuenta { font-size: 28px; white-space: nowrap; color: rgba(217, 217, 217, .55); }
 `,
   };
 };

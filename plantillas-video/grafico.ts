@@ -21,7 +21,7 @@ export default (
     <div class="linea anim aparece" style="--d: ${0.35 + i * 0.16}s">
       <span class="etiqueta">${ctx.esc(fila.etiqueta)}</span>
       <span class="pista">
-        <i class="barra barra-corre${fila.destacado ? " fuerte" : ""} anim"
+        <i class="graf-barra barra-corre${fila.destacado ? " fuerte" : ""} anim"
            style="--d: ${0.45 + i * 0.16}s; width: ${ancho}%"></i>
       </span>
     </div>`;
@@ -60,7 +60,7 @@ export default (
   border-radius: 6px;
   background: rgba(217, 217, 217, 0.06);
 }
-.grafico .barra {
+.grafico .graf-barra {
   display: block;
   height: 100%;
   border-radius: 6px;
@@ -72,7 +72,7 @@ export default (
 .barra-corre {
   animation: entraBarra 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-.grafico .barra.fuerte { background: var(--tono, var(--oro)); }
+.grafico .graf-barra.fuerte { background: var(--tono, var(--oro)); }
 .grafico .nota {
   margin-top: 46px;
   font-size: 30px;

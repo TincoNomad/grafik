@@ -44,6 +44,10 @@ grabaciones de pantalla.
 - Una plantilla nueva es un archivo en `plantillas-video/` que exporta por
   defecto `(datos, ctx) => { nombre, html, css }`. `src/video.ts` la busca por
   nombre, no hay registro que actualizar.
+- **Los selectores CSS van bajo la clase de la plantilla.** Todas las escenas de
+  un video comparten un solo `<style>`, así que un `.barra` suelto se aplica
+  también a las demás. Ya pasó: `grafico` y `cortinilla` chocaban en `.barra` y
+  el gráfico salía deformado solo cuando las dos escenas convivían.
 
 ## Barridos
 
@@ -52,9 +56,10 @@ corte cae en ese frame. Por eso **existe a los dos lados del corte**: entre dos
 escenas HTML va en las dos (`barrido` en el guion); entre una escena y un clip
 de video, la mitad del clip se replica en ffmpeg con `overlay` y `drawbox`.
 
-Los colores de `montaje.sh` están corridos ~8 puntos respecto a los del CSS a
-propósito: ffmpeg y Chrome convierten a YUV distinto. Si se "corrigen", aparece
-un escalón de color justo en el empalme.
+Los colores de `montaje.sh` y los del CSS son **el mismo hexadecimal** hoy. Una
+nota vieja decía que estaban corridos 8 puntos para compensar la conversión a
+YUV: se midió y no es cierto. Si algún día hay que corregirlos, se cambia en los
+dos lados a la vez y se compara el frame del corte.
 
 ## Artefactos
 

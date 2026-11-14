@@ -16,12 +16,20 @@ export default (
     ? `<div class="dibujo anim emerge" style="--d: .45s">${pixel(SPRITES[datos.sprite], 16)}</div>`
     : "";
 
+  // El ancho útil son 750px (165 de margen por lado). El tamaño baja con el
+  // largo de la palabra y el punto se escala con ella; si no, al achicar la
+  // palabra el punto se queda grande y se sale por la derecha.
+  const palabra = datos.palabra ?? "NO";
+  const tope = datos.sprite ? 330 : 520;
+  const tam = Math.min(tope, Math.floor(1770 / Math.max(1, palabra.length + 1)));
+  const punto = Math.round(tam * 0.48);
+
   return {
     nombre: "golpe",
     duracion: datos.duracion ?? 2,
     html: `<div class="lleno golpe${datos.sprite ? " con-dibujo" : ""}">
-  <div class="palabra anim emerge" style="--d: .05s">${ctx.esc(datos.palabra ?? "NO")}<span
-    class="punto anim aparece" style="--d: .4s">.</span></div>
+  <div class="palabra anim emerge" style="--d: .05s; font-size: ${tam}px">${ctx.esc(palabra)}<span
+    class="punto anim aparece" style="--d: .4s; font-size: ${punto}px">.</span></div>
   ${datos.pie ? `<div class="pie anim aparece" style="--d: .55s">${ctx.esc(datos.pie)}</div>` : ""}
   ${dibujo}
 </div>`,

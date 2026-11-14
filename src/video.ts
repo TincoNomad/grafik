@@ -16,12 +16,15 @@ import type { Ctx } from "./render.ts";
 const ANCHO = 1080;
 const ALTO = 1920;
 
-// Zona que TikTok e Instagram no tapan con su interfaz, en proporción al lienzo.
+// Zona que TikTok e Instagram no tapan con su interfaz. No hay cifra oficial:
+// TikTok no publica una, y todas las que circulan son mediciones de terceros.
+// Se toma el peor caso y simétrico a los lados para que el mismo video sirva
+// en las dos apps: arriba 200, abajo 400, y 165 a cada lado.
 const SEGURA = {
-  arriba: ALTO * 0.13,
-  abajo: ALTO * 0.81,
-  izquierda: ANCHO * 0.055,
-  derecha: ANCHO * 0.945,
+  arriba: 200,
+  abajo: ALTO - 400,
+  izquierda: 165,
+  derecha: ANCHO - 165,
 };
 
 export interface EscenaVideo {
@@ -29,6 +32,8 @@ export interface EscenaVideo {
   duracion: number;
   html: string;
   css?: string;
+  /** Una transición no es contenido: tapa el lienzo y se salta los chequeos. */
+  tipo?: "escena" | "transicion";
 }
 
 export interface EntradaGuion {
@@ -165,7 +170,7 @@ for (const entrada of entradas) {
 
 let inicio = 0;
 const metadatos = escenas.map((e, i) => {
-  const meta = { nombre: e.nombre, inicio, duracion: e.duracion, indice: i };
+  const meta = { nombre: e.nombre, inicio, duracion: e.duracion, indice: i, tipo: e.tipo };
   inicio += e.duracion;
   return meta;
 });
@@ -230,6 +235,9 @@ window.revisar = () => {
   const antes = zonas.map((z) => z.style.display);
 
   zonas.forEach((zona, i) => {
+    // Una transición tapa el lienzo a propósito: medirla contra la zona segura
+    // solo produce avisos falsos.
+    if (ZONAS[i].tipo === "transicion") return;
     zonas.forEach((z, k) => { z.style.display = k === i ? "flex" : "none"; });
     zona.style.setProperty("--t", String(Math.max(0, ZONAS[i].duracion - 0.35)));
 

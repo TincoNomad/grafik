@@ -15,6 +15,7 @@ export default (
 
   return {
     nombre: "cortinilla",
+    tipo: "transicion",
     duracion: datos.duracion ?? 0.72,
     html: `<div class="cortinilla-lienzo">
   ${barras}
