@@ -1,7 +1,7 @@
 // Escena de golpe: una sola palabra a toda pantalla, opcionalmente con un
 // sprite pixelado debajo. Rompe el ritmo entre dos escenas explicativas.
 import type { Ctx } from "../render.ts";
-import { pixel, SPRITES, type NombreSprite } from "../pixel.ts";
+import { pixel, SPRITES, type NombreSprite } from "../src/pixel.ts";
 
 export default (
   datos: {

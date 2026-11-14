@@ -2,7 +2,7 @@
 // Es la que se repite más: cambia el texto, la animación es la misma.
 // Con `sprite`, la mascota aparece abajo, sola, como remate de la idea.
 import type { Ctx } from "../render.ts";
-import { pixel, SPRITES, type NombreSprite } from "../pixel.ts";
+import { pixel, SPRITES, type NombreSprite } from "../src/pixel.ts";
 
 export default (
   datos: {

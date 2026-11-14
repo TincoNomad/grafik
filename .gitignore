@@ -1,2 +1,8 @@
 .DS_Store
 node_modules/
+
+# Salidas generadas: los MP4 y los PNG intermedios se rehacen con montaje.sh.
+build/
+
+# En catalogo-video, montaje.sh copia el guion del tramo encima de este archivo.
+proyectos/catalogo-video/video/guion.ts

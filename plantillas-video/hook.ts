@@ -2,7 +2,7 @@
 // Con `sprite`, el dibujo se pone a la derecha y el texto se achica para
 // convivir; sin sprite, el título va solo y grande.
 import type { Ctx } from "../render.ts";
-import { pixel, SPRITES, type NombreSprite } from "../pixel.ts";
+import { pixel, SPRITES, type NombreSprite } from "../src/pixel.ts";
 
 export default (
   datos: {

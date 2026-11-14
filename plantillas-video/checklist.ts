@@ -2,7 +2,7 @@
 // Es la parte que convierte el video en algo aplicable: no dice qué hacer,
 // dice qué preguntarse antes de copiar lo que hacen otros.
 import type { Ctx } from "../render.ts";
-import { pixel, SPRITES, type NombreSprite } from "../pixel.ts";
+import { pixel, SPRITES, type NombreSprite } from "../src/pixel.ts";
 
 export default (
   datos: {

@@ -142,7 +142,7 @@ for (const entrada of entradas) {
     process.exit(1);
   }
 
-  const ruta = join(import.meta.dir, "plantillas-video", `${plantilla}.ts`);
+  const ruta = join(import.meta.dir, "..", "plantillas-video", `${plantilla}.ts`);
   if (!existsSync(ruta)) {
     console.error(`No existe la plantilla ${plantilla} (${ruta}).`);
     process.exit(1);

@@ -7,11 +7,25 @@ No impone diseño: resuelve el render, los tamaños, el tiempo y el orden de los
 archivos.
 
 ```
-build.ts  → PNG  (carruseles de Instagram)
-video.ts  → MP4  (reels y TikTok)
+src/build.ts  → PNG  (carruseles de Instagram)
+src/video.ts  → MP4  (reels y TikTok)
 ```
 
 Los dos comparten `render.ts`, `base.css` y el mismo contexto de plantilla.
+
+## Estructura
+
+```
+src/               el motor: render, tamaños, tiempo y orden
+plantillas/        plantillas de imagen, listas para copiar a un proyecto
+plantillas-video/  plantillas de video, las carga `video.ts` por nombre
+vendor/            código ajeno vendorizado, con su licencia al lado
+proyectos/         el contenido de cada video
+```
+
+Un proyecto vive en `proyectos/<nombre>/` y tiene `video/guion.ts` más sus
+assets. `proyectos/catalogo-video` es el ejemplo completo: mezcla tramos de
+grafik con grabaciones de pantalla y por eso trae su propio `montaje.sh`.
 
 ---
 
@@ -20,10 +34,10 @@ Los dos comparten `render.ts`, `base.css` y el mismo contexto de plantilla.
 ## Uso
 
 ```bash
-bun video.ts ../mi-video                 # 1080x1920 a 30fps
-bun video.ts ../mi-video --rapido        # 540x960 a 12fps, para revisar
-bun video.ts ../mi-video --solo hook     # una sola escena
-bun video.ts ../mi-video --out ./salida
+bun src/video.ts ../mi-video                 # 1080x1920 a 30fps
+bun src/video.ts ../mi-video --rapido        # 540x960 a 12fps, para revisar
+bun src/video.ts ../mi-video --solo hook     # una sola escena
+bun src/video.ts ../mi-video --out ./salida
 ```
 
 El MP4 queda en `~/Movies/grafik/`, y el script imprime la ruta:
@@ -251,7 +265,7 @@ así que **todo el texto se dibuja en HTML**. ffmpeg solo codifica.
 ## Verificar
 
 ```bash
-bun prueba-video.ts
+bun src/prueba-video.ts
 ```
 
 Crea un proyecto temporal, renderiza dos escenas y revisa duración, tamaño,
@@ -264,9 +278,9 @@ pista de audio, que los frames cambien y que el aviso de desborde salte.
 ## Uso
 
 ```bash
-bun ~/Documents/Proyectos/grafik/build.ts ../mi-proyecto
-bun ~/Documents/Proyectos/grafik/build.ts ../mi-proyecto --tamano story
-bun ~/Documents/Proyectos/grafik/build.ts ../mi-proyecto --out ./grafica
+bun ~/Documents/Proyectos/grafik/src/build.ts ../mi-proyecto
+bun ~/Documents/Proyectos/grafik/src/build.ts ../mi-proyecto --tamano story
+bun ~/Documents/Proyectos/grafik/src/build.ts ../mi-proyecto --out ./grafica
 ```
 
 | Tamaño | Píxeles | Para |
@@ -288,7 +302,7 @@ Los PNG se guardan en `~/Downloads` como `<proyecto>-01-<nombre>.png`.
 
 2. Edita los datos y el CSS dentro del archivo.
 
-3. Corre `bun build.ts ../mi-proyecto`.
+3. Corre `bun src/build.ts ../mi-proyecto`.
 
 Cada pieza exporta una función que recibe un contexto y devuelve una pieza o un
 arreglo de piezas. **El arreglo es el carrusel**: el orden en que lo devuelves es
@@ -336,7 +350,7 @@ archivo.
 ## Verificar
 
 ```bash
-bun prueba.ts
+bun src/prueba.ts
 ```
 
 Crea un proyecto temporal, renderiza una pieza y revisa que el PNG salga con el
