@@ -1,5 +1,6 @@
-// Bandas de texto que van arriba del demo. Una por tramo, para que el pie
-// cambie sin recortar la grabación. 1080x110, se superponen en y=250.
+// Título del tramo. Va suelto sobre el carbón del marco, sin píldora ni franja:
+// el fondo se pinta del mismo #2f2e2b para que se funda con el marco y sólo se
+// vea el texto. 940x130, centrado en x=70.
 // Un idioma por reel: `montaje.sh en` exporta IDIOMA=en.
 type Ctx = { proyecto: string; esc: (t: string) => string };
 
@@ -19,27 +20,27 @@ const TEXTOS = {
 export default (ctx: Ctx) =>
   TEXTOS[process.env.IDIOMA === "en" ? "en" : "es"].map((texto, i) => ({
     nombre: `banda-${i + 1}`,
-    ancho: 1080,
-    alto: 110,
-    html: `<div class="slide banda">
+    ancho: 940,
+    alto: 130,
+    html: `<div class="slide burbuja">
   <p class="texto">${ctx.esc(texto)}</p>
 </div>`,
     css: `
-.banda {
-  position: relative;
+.burbuja {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* El mismo carbón del marco: así el PNG desaparece y sólo queda el texto. */
   background: #2f2e2b;
   font-family: -apple-system, system-ui, "Inter", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 .texto {
-  position: absolute;
-  left: 68px;
-  top: 16px;
-  width: 944px;
-  font-size: 50px;
+  margin: 0;
+  font-size: 54px;
   font-weight: 600;
-  line-height: 1.2;
-  color: #d9d9d9;
+  line-height: 1;
+  color: #f2efe6;
 }
 `,
   }));

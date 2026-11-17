@@ -3,6 +3,7 @@
 // Con `sprite`, la mascota aparece abajo, sola, como remate de la idea.
 import type { Ctx } from "../render.ts";
 import { pixel, SPRITES, type NombreSprite } from "../src/pixel.ts";
+import { barrido as elementoBarrido, type Figura } from "./barrido.ts";
 
 export default (
   datos: {
@@ -11,6 +12,10 @@ export default (
     rotulo?: string;
     sprite?: NombreSprite;
     duracion?: number;
+    /** Segundos desde el inicio de la escena en que arranca el barrido. */
+    barrido?: number;
+    figura?: Figura;
+    ritmo?: number;
   },
   ctx: Ctx,
 ) => ({
@@ -28,7 +33,7 @@ export default (
       ? `<div class="dibujo anim emerge" style="--d: 1.3s">${pixel(SPRITES[datos.sprite], 17)}</div>`
       : ""
   }
-</div>`,
+</div>${elementoBarrido(datos)}`,
   css: `
 .concepto .titulo { font-size: 116px; }
 .concepto .subtitulo { max-width: 820px; }

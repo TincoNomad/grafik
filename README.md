@@ -9,9 +9,12 @@ archivos.
 ```
 src/build.ts  → PNG  (carruseles de Instagram)
 src/video.ts  → MP4  (reels y TikTok)
+pipelines/    → corte y montaje de una grabación larga con ffmpeg
 ```
 
-Los dos comparten `render.ts`, `base.css` y el mismo contexto de plantilla.
+Las dos primeras comparten `render.ts`, `base.css` y el mismo contexto de
+plantilla. La tercera es shell y no usa el motor: parte de un video maestro y
+devuelve un proyecto Kdenlive o clips verticales.
 
 ## Estructura
 
@@ -20,6 +23,7 @@ src/               el motor: render, tamaños, tiempo y orden
 plantillas/        plantillas de imagen, listas para copiar a un proyecto
 plantillas-video/  plantillas de video, las carga `video.ts` por nombre
 proyectos/         el contenido de cada video
+pipelines/         scripts de shell: corte de clases y clips verticales
 ```
 
 `src/formas.ts` no lo importa nadie todavía: expone `poligono(lados, r)` y
@@ -82,9 +86,9 @@ export default [
 `duracion` está en segundos y es del guion, no de la plantilla. Cuando haya voz,
 se pone ahí lo que dure su audio y las animaciones se reacomodan solas.
 
-## Fondo, logo y tarjeta
+## Fondo, logo y audio
 
-Los dos assets son opcionales y se buscan por nombre:
+Los tres assets son opcionales y se buscan por nombre:
 
 ```
 mi-video/
@@ -92,9 +96,14 @@ mi-video/
     guion.ts
     fondo.png     ← cualquier imagen. Se recorta con `cover` a 1080x1920
     logo.png      ← aparece como escudo en la escena de cierre
+    audio.wav     ← banda sonora. También acepta audio.mp3 y audio.m4a
 ```
 
-Si no están, el fondo es el carbón `#2f2e2b` y no hay escudo.
+Sin audio, la pista va en silencio (`anullsrc`): algunas redes rechazan un MP4
+que no tiene ninguna pista. Con audio, si la pista dura **menos** que el video se
+rellena con silencio hasta el final; si dura más, se corta en el último frame.
+
+Si no están, el fondo es el carbón `#2f2e2b`, no hay escudo y no hay sonido.
 
 Todo el contenido vive dentro de una `.tarjeta`: placa del carbón de la marca
 (`--fondo`, `#2f2e2b`) con 920px de alto mínimo, borde de 1px oro y una barra
@@ -127,9 +136,10 @@ naranja, `cierre` en terracota.
 | `cierre` | `texto`, `cta`, `rotulo`, `redes` | Conclusión, llamada a la acción y redes |
 | `burbujas` | `burbujas[]`, `texto`, `rotulo`, `barrido`, `figura`, `ritmo` | Mensajes que se acumulan: sirve para mostrar una molestia |
 | `catalogo` | `texto`, `rotulo`, `barrido`, `figura`, `ritmo` | Una rejilla que se arma celda por celda |
-| `cortinilla` | `duracion` | 0.7s de geometría entre dos tomas distintas |
 | `sellos` | `sellos[{icono,texto}]`, `texto`, `rotulo` | Tres dudas del comprador resueltas con íconos |
 | `filtro` | `texto`, `sub`, `rotulo`, `etiquetas[2]`, `barrido` | Un camino que se abre en dos y descarta una rama |
+| `bot` | `rotulo`, `texto`, `caliente`, `frio` | Dos conversaciones con su veredicto, para mostrar un filtro en acción |
+| `doble` | `a`, `datosA`, `b`, `datosB`, `figura`, `barrido`, `ritmo` | Dos escenas del mapa en un solo cuadro |
 
 Todas aceptan `duracion` y `tono`.
 
@@ -155,6 +165,58 @@ queda como si faltaran 0.8s para entrar. Por eso el resultado es idéntico en
 cada render.
 
 Para animaciones nuevas: un `@keyframes` y una clase en `wiracocha.css`.
+
+## Aprovechar el alto y el ancho
+
+El lienzo es de 1080x1920, pero el espacio **de diseño** es menor: TikTok e
+Instagram tapan el 13% de arriba y el 19% de abajo. Quedan **1305 px útiles**.
+
+Ese es el techo. Cuando el chequeo avisa que algo "se sale arriba" o "se sale
+abajo", no está pidiendo que lo muevas: está diciendo que no cabe.
+
+Tres palancas, en este orden de preferencia:
+
+**1. El ancho viene del padding.** `.escena` trae `0 165px` a cada lado. Si el
+contenido es ancho, se reduce: en `doble` está a `82px` y el área pasó de 750 a
+916 px, un 22% más sin tocar nada adentro.
+
+**2. El alto se gana con `scale` y `translateY`.** No hay padding vertical: la
+escena centra el contenido. Para que ocupe más arriba se escala y se desplaza:
+
+```css
+transform: translateY(-100px) scale(.79);
+```
+
+Anclar con `transform-origin: bottom` **no funciona**: el bloque sin escalar es
+más alto que el lienzo, así que su borde inferior queda fuera y el contenido se
+sale igual. Escalar desde el centro y desplazar es predecible; anclar abajo, no.
+
+**3. Los laterales, con `align-self`.** En una columna flex,
+`flex-start` y `flex-end` pegan cada bloque a un borde. Ojo: angostar un bloque
+parte el texto en más líneas, crece en alto y choca con la zona segura. Las tres
+cosas no se pueden maximizar a la vez; hay que elegir dos.
+
+### Dos escenas en un cuadro
+
+`doble` llama a dos plantillas y pega su HTML y su CSS. Dos cosas que rompen si
+se ignoran:
+
+- **El barrido se arma fuera del bloque escalado.** `transform` crea un bloque
+  contenedor, así que el barrido se posicionaría contra el bloque de texto en vez
+  de contra el lienzo. `doble` desactiva el de la segunda escena y lo rearma
+  aparte, como hermano.
+- **El CSS es uno solo.** Todo va bajo la clase de su plantilla, o los dos
+  bloques se pisan.
+
+### Una escena sin cortar
+
+Un `animation-delay` en el contenedor de un bloque **se lee como escena nueva**.
+Como los hijos ya tenían sus propias animaciones, cuando el contenedor aparece
+éstas ya terminaron: el bloque entra entero, no armándose.
+
+```css
+.apilado > :last-child { animation: aparece .5s ease-out both; animation-delay: 3.8s; }
+```
 
 ## Barrido entre escenas
 
@@ -187,11 +249,7 @@ mapa:
 |---|---|---|---|
 | `panel` | Rectángulo con cinco bandas y centro macizo | Diagonal: entra por abajo-derecha, sale por arriba-izquierda | `figura: "panel"` |
 | `escalera` | Seis bandas escalonadas | Horizontal, de izquierda a derecha | `figura: "escalera"` |
-| cortinilla | Cinco barras con degradado, un anillo y un punto | Las barras barren desde la izquierda, escalonadas 60 ms | Plantilla propia: escena de 0.72 s con `tipo: "transicion"` |
 | puertas | Dos paneles de carbón de media pantalla | Del borde al centro, se juntan y se separan | **Solo en `proyectos/catalogo-video/montaje.sh`** |
-
-La cortinilla se marca con `tipo: "transicion"` para que los chequeos de zona
-segura la salten: está hecha para tapar el lienzo, no para respetarlo.
 
 La escalera mide 1984px de ancho por banda y recorre 3964px. No es un capricho:
 a cada altura de la pantalla hay una sola banda, así que en el momento del
@@ -241,6 +299,7 @@ Se ajusta en un solo lugar: `.escena` en `wiracocha.css`.
 Antes de codificar, cada escena se mide en su estado final:
 
 - Elementos fuera de la zona que tapa la interfaz de TikTok (13% arriba, 19% abajo).
+  Ese borde no es un aviso cosmético: es el límite de diseño, 1305 px de alto.
 - Textos más anchos que su caja (`scrollWidth`), que es como se escapa un
   título largo sin que la caja lo delate.
 
@@ -296,9 +355,9 @@ pista de audio, que los frames cambien y que el aviso de desborde salte.
 ## Uso
 
 ```bash
-bun ~/Documents/Proyectos/grafik/src/build.ts ../mi-proyecto
-bun ~/Documents/Proyectos/grafik/src/build.ts ../mi-proyecto --tamano story
-bun ~/Documents/Proyectos/grafik/src/build.ts ../mi-proyecto --out ./grafica
+bun src/build.ts ../mi-proyecto
+bun src/build.ts ../mi-proyecto --tamano story
+bun src/build.ts ../mi-proyecto --out ./grafica
 ```
 
 | Tamaño | Píxeles | Para |
@@ -373,3 +432,231 @@ bun src/prueba.ts
 
 Crea un proyecto temporal, renderiza una pieza y revisa que el PNG salga con el
 tamaño correcto.
+
+---
+
+# Pipelines
+
+Dos scripts de shell, independientes entre sí, que comparten el mismo video maestro.
+
+```
+master .mkv ──┬──► editor1.sh ──► .kdenlive horizontal (YouTube)
+              └──► clips.sh    ──► clips verticales 1080x1920 (TikTok / IG / Shorts)
+```
+
+Ninguno de los dos toca el video original. Todos los derivados se escriben al lado
+del master o en la carpeta de salida que se indique.
+
+## Requisitos
+
+| Herramienta | Instalación | Para qué |
+|---|---|---|
+| `ffmpeg` | `brew install ffmpeg` | extraer audio, cortar y componer |
+| `mlx-whisper` | `uv tool install mlx-whisper` | transcribir con timestamps |
+| `auto-editor` | ver abajo | detectar silencios y exportar `.kdenlive` |
+| `Kdenlive` | `brew install --cask kdenlive` | abrir el `.kdenlive` y exportar el horizontal (macOS 13+) |
+| `opencode` | ya instalado | elegir qué tramos cortar |
+
+`auto-editor` se instala como binario suelto porque el paquete de PyPI intenta
+descargarlo y falla por certificados SSL en este Mac:
+
+```bash
+curl -sL -o ~/.local/bin/auto-editor \
+  https://github.com/WyattBlue/auto-editor/releases/latest/download/auto-editor-macos-arm64
+chmod +x ~/.local/bin/auto-editor
+```
+
+**Nota:** el `ffmpeg` de Homebrew no incluye el filtro `drawtext` (falta
+libfreetype). Por eso el fondo de los clips verticales es un PNG generado aparte,
+no un texto dibujado por ffmpeg.
+
+---
+
+## Pipeline 1 — `editor1.sh`
+
+Transcribe el video con timestamps y genera un proyecto Kdenlive con los silencios
+ya quitados.
+
+```bash
+./pipelines/editor1.sh ~/Movies/clase.mkv              # con LLM: silencios + tramos muertos
+./pipelines/editor1.sh ~/Movies/clase.mkv --sin-ia     # solo silencios (gratis, sin tokens)
+./pipelines/editor1.sh ~/Movies/clase.mkv --preview    # calibra, no escribe nada
+```
+
+### Qué genera (junto al video)
+
+| Archivo | Contenido |
+|---|---|
+| `<base>.srt` | transcripción con timestamps |
+| `<base>.cortes.txt` | lo que respondió el LLM |
+| `<base>.kdenlive` | proyecto horizontal ya cortado |
+
+El `.kdenlive` **no renderiza nada**: apunta al video original y guarda solo los
+cortes. Se abre en Kdenlive y se exporta desde ahí.
+
+### Qué hace por dentro
+
+1. `ffmpeg` extrae el audio a WAV mono 16 kHz (formato que espera Whisper).
+2. `mlx_whisper` transcribe a `.srt`.
+3. `opencode run` lee el `.srt` y devuelve líneas `CORTE mm:ss mm:ss`.
+4. `auto-editor` aplica todo en una sola pasada y exporta el `.kdenlive`.
+
+### Variables de entorno
+
+| Variable | Default | Qué controla |
+|---|---|---|
+| `UMBRAL` | `-40dB` | debajo de esto se considera silencio |
+| `MARGEN` | `0.15s,0.35s` | aire que se deja antes y después de cada frase |
+| `SUAVE` | `0.8s,0.3s` | no cortar pausas menores a 0.8 s |
+| `MODELO` | `opencode-go/deepseek-v4.1-flash` | modelo que elige los cortes |
+
+```bash
+UMBRAL=-45dB ./pipelines/editor1.sh ~/Movies/clase.mkv
+```
+
+### Calibrar antes de correrlo en serio
+
+```bash
+./pipelines/editor1.sh ~/Movies/clase.mkv --preview
+```
+
+`--preview` imprime cuánto se cortaría. Para una clase hablada, **30–40%** es
+normal. Si pasa de 50%, sube el umbral (más negativo). Si baja de 10%, está
+demasiado alto.
+
+### Conversión de tiempos
+
+`auto-editor --cut-out` **no acepta el formato `mm:ss`**. Acepta segundos con
+unidad: `90s`, `1.5s`. `1m30s` falla. Por eso el script convierte cada respuesta
+del LLM a segundos antes de pasarla.
+
+---
+
+## Pipeline 2 — `clips.sh`
+
+Corta fragmentos verticales de 1080x1920 con el sticker del canal arriba y dos
+líneas de texto abajo.
+
+```bash
+./pipelines/clips.sh ~/Movies/clase.mkv ~/Movies/clips
+```
+
+### La lista de cortes está dentro del script
+
+En el array `cortes`, cada línea es `inicio duracion nombre`:
+
+```bash
+cortes=(
+  "32:48.7 54.6 es-como-cocinar-clase5.mp4"
+)
+```
+
+- `inicio`: minuto del **video maestro**, no del renderizado. Se le restan 0.3 s de margen.
+- `duracion`: segundos con un decimal (duración real + 0.6 s de margen).
+- `nombre`: lleva el sufijo `-claseN` para saber de qué clase salió.
+
+**Al cambiar de clase hay que reescribir este array.** Los minutos de una clase no
+sirven para otra.
+
+### El fondo es un asset fijo
+
+`_fondo.png` vive **junto a `clips.sh`**, no en la carpeta de salida. Es un solo
+archivo para todas las clases: la carpeta de salida solo recibe `.mp4`.
+
+```
+pipelines/
+├── clips.sh
+├── editor1.sh
+└── _fondo.png    ← 1080x1920 con sticker y texto
+```
+
+Si el archivo no existe, `clips.sh` se niega a correr. Para regenerarlo (solo si
+cambias el diseño), desde `pipelines/`:
+
+```bash
+uv run --with pillow python - <<'EOF'
+from pathlib import Path
+from PIL import Image, ImageDraw, ImageFont
+
+W, H = 1080, 1920
+fondo = Image.new("RGB", (W, H), (0, 0, 0))
+png = Path.home() / "Downloads" / "wiracocha_tiktok_stiker.png"
+sticker = Image.open(png).convert("RGBA").resize((602, 117), Image.LANCZOS)
+fondo.paste(sticker, (239, 300), sticker)
+
+d = ImageDraw.Draw(fondo)
+ttf = "/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf"
+for texto, tam, y, color in [
+    ("VIDEO COMPLETO EN YOUTUBE", 58, 1380, (255, 255, 255)),
+    ("EN VIVO \u00b7 LUNES Y MI\u00c9RCOLES 7PM", 42, 1462, (170, 170, 170)),
+]:
+    f = ImageFont.truetype(ttf, tam)
+    d.text(((W - d.textlength(texto, font=f)) / 2, y), texto, font=f, fill=color)
+
+fondo.save("_fondo.png")
+EOF
+```
+
+Se puede apuntar a otro fondo con `FONDO=/ruta/otro.png ./pipelines/clips.sh ...`,
+pero no hace falta.
+
+### Layout
+
+| Elemento | Posición | Tamaño |
+|---|---|---|
+| Sticker | x=239, y=300 | 602x117 (tamaño nativo, sin reescalar) |
+| Video 16:9 | x=0, y=656 | 1080x607 |
+| Texto inferior | centrado, y=1380 | — |
+| Límite de zona tapada por TikTok/IG | y=1620 | — |
+
+Todo lo que pase de y=1620 queda debajo de la descripción, la música y los botones
+de la app.
+
+---
+
+## Flujo completo para una clase nueva
+
+```bash
+# 1. preparar la clase (transcribe + proyecto horizontal)
+./pipelines/editor1.sh ~/Movies/2026-11-02\ 19-41-01.mkv
+
+# 2. abrir en Kdenlive, revisar y exportar el horizontal
+open -a kdenlive ~/Movies/2026-11-02\ 19-41-01.kdenlive
+
+# 3. elegir los clips (esto requiere leer el .srt y decidir; no es automático)
+#    se reescribe el array `cortes` de clips.sh con las ventanas nuevas
+
+# 4. generar los verticales
+./pipelines/clips.sh ~/Movies/2026-11-02\ 19-41-01.mkv ~/Movies/clips
+```
+
+Después, agregar una tarjeta por clip al Backlog del Kanban en
+`Proyecto/Redes sociales/Publicaciones de redes sociales.md`, con la ruta del `.mp4`.
+
+---
+
+## Problemas conocidos
+
+**Whisper alucina en silencios largos.** Sin `--condition-on-previous-text False`
+inventa texto y lo repite cientos de veces (se vio 117 veces la misma frase en una
+clase). El script ya lo incluye. Si vuelve a pasar, revisar primero esa opción.
+
+**Los timestamps del `.srt` no coinciden al 100% con el audio.** Puede haber hasta
+0.3 s de desfase en los extremos de cada bloque. Por eso los clips llevan 0.3 s de
+margen.
+
+**El código en pantalla no se lee en vertical.** Un video 720p dentro de un lienzo
+de 1080 de ancho queda con el texto del editor a un par de píxeles. Afecta a los
+clips donde el contenido es el código; no afecta a los de cámara. Solución
+pendiente: zoom 2x a la región del código en esos clips.
+
+**`auto-editor --cut-out` no acepta `mm:ss`.** Solo segundos con unidad: `90s`,
+`1.5s`. `1m30s` falla.
+
+## Pendientes
+
+- `clips.sh` debería leer la lista de cortes de un `_cortes.tsv` en vez de tenerla
+  en el array.
+- Paso de descripciones: una sola llamada al LLM con los fragmentos del `.srt` y
+  que devuelva título, descripción y hashtags por clip.
+- Zoom automático en los clips cuyo contenido es código.

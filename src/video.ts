@@ -98,6 +98,7 @@ const buscar = (nombres: string[]) =>
 
 const rutaFondo = buscar(["fondo.png", "fondo.jpg", "fondo.webp"]);
 const rutaLogo = buscar(["logo.png", "logo.svg"]);
+const rutaAudio = buscar(["audio.wav", "audio.mp3", "audio.m4a"]);
 
 const ctx: Ctx = {
   proyecto,
@@ -306,6 +307,7 @@ console.log(
   `${escenas.length} escena(s), ${total.toFixed(1)}s a ${fps}fps ` +
     `(${ANCHO * escala}×${ALTO * escala})`,
 );
+if (rutaAudio) console.log(`♪ ${basename(rutaAudio)}`);
 for (const aviso of avisosDuracion) console.log(`⚠ ${aviso}`);
 
 const resultado = await renderVideo({
@@ -318,6 +320,7 @@ const resultado = await renderVideo({
   // Un fondo fotográfico es ruido: en PNG cada frame pesa 2 MB y tarda 684 ms.
   // En JPEG q97 baja a 470 KB y 75 ms, y el H.264 final igual va en 4:2:0.
   formato: rutaFondo ? "jpeg" : "png",
+  audio: rutaAudio,
 });
 
 console.log(`✓ ${bonita(resultado.salida)} — ${resultado.frames} frames`);

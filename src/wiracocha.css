@@ -38,6 +38,9 @@
      Todo lo demás va a sangre contra las estrellas. */
   justify-content: center;
   padding: 68px 60px 64px 56px;
+  /* Sin esto la tarjeta mide lo que mide su contenido y en un lienzo de 1920px
+     quedan 400px muertos arriba y 400 abajo. */
+  min-height: 1400px;
   border-radius: 34px;
   border: 1px solid rgba(212, 175, 55, 0.22);
   /* Un solo acento por escena, en el borde izquierdo. El color lo pone la
@@ -302,6 +305,25 @@
     transform: translate(-1080px, -1920px);
   }
 }
+/* El mismo panel, pero cruzando del borde inferior izquierdo al superior
+   derecho. Sirve para alternar dos cortes seguidos sin que se repita el gesto. */
+@keyframes barridoDiagonalInverso {
+  from {
+    transform: translate(-1080px, 1920px);
+  }
+  to {
+    transform: translate(1080px, -1920px);
+  }
+}
+/* Y el de regreso: del borde superior derecho al inferior izquierdo. */
+@keyframes barridoDiagonalRegreso {
+  from {
+    transform: translate(1080px, -1920px);
+  }
+  to {
+    transform: translate(-1080px, 1920px);
+  }
+}
 /* La escalera: seis bandas de 320px, cada una corrida 180px respecto a la de
    arriba, todas del mismo largo (1984px). Como todas miden igual, la caja que
    forman es simétrica y el centro del recorrido cae justo donde cada banda
@@ -333,6 +355,12 @@
 .barrido.panel {
   animation-name: barridoDiagonal;
   animation-duration: var(--db, 0.7s);
+}
+.barrido.panel.inverso {
+  animation-name: barridoDiagonalInverso;
+}
+.barrido.panel.regreso {
+  animation-name: barridoDiagonalRegreso;
 }
 .barrido.escalera {
   background: none;

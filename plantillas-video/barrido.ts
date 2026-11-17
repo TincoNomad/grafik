@@ -7,7 +7,7 @@
 //   escena que entra  → -ritmo/2
 //
 // No es una plantilla: `video.ts` solo carga los archivos que el guion nombra.
-export type Figura = "panel" | "escalera";
+export type Figura = "panel" | "panel-inverso" | "panel-regreso" | "escalera";
 
 const BANDAS = 6;
 const ALTO_BANDA = 320;
@@ -41,13 +41,14 @@ export const barrido = (datos: {
   const ritmo = datos.ritmo ?? (figura === "escalera" ? 1.2 : 0.7);
   const estilo = `--d: ${datos.barrido}s; --db: ${ritmo}s`;
 
-  if (figura === "panel") {
+  if (figura.startsWith("panel")) {
+    const variante = figura === "panel" ? "" : ` ${figura.split("-")[1]}`;
     const marcos = MARCOS.map(
       ([separacion, grosor, color]) =>
         `<i style="inset: ${separacion}px; border: ${grosor}px solid ${color}"></i>`,
     ).join("");
     const centro = `<i style="inset: ${CENTRO[0]}px; background: ${CENTRO[1]}"></i>`;
-    return `<div class="barrido panel" style="${estilo}">${marcos}${centro}</div>`;
+    return `<div class="barrido panel${variante}" style="${estilo}">${marcos}${centro}</div>`;
   }
 
   // Los 2px de sobra evitan que un redondeo deje una línea sin tapar en el corte.

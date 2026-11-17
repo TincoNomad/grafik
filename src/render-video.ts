@@ -180,10 +180,13 @@ export const renderVideo = async (opciones: {
   salida: string;
   escala?: number;
   formato?: "png" | "jpeg" | "webp";
+  /** Ruta a una pista de audio. Si falta, el video lleva silencio. */
+  audio?: string | null;
 }): Promise<{ salida: string; avisos: string[]; frames: number }> => {
   const { html, ancho, alto, fps, salida } = opciones;
   const escala = opciones.escala ?? 1;
   const formato = opciones.formato ?? "png";
+  const audio = opciones.audio ?? null;
   const nav = await navegador(html, { ancho, alto });
 
   let ffmpeg: ChildProcess | undefined;
@@ -202,9 +205,16 @@ export const renderVideo = async (opciones: {
         "-framerate", String(fps),
         "-c:v", entrada,
         "-i", "-",
-        "-f", "lavfi",
-        "-i", "anullsrc=channel_layout=stereo:sample_rate=48000",
-        "-shortest",
+        // Con audio real `-shortest` no sirve: si la pista dura menos que el
+        // video, cortaría el video. `apad` la rellena con silencio y `-t` fija
+        // el final en la duración del video.
+        ...(audio
+          ? ["-i", audio, "-af", "apad", "-t", (total / fps).toFixed(6)]
+          : [
+              "-f", "lavfi",
+              "-i", "anullsrc=channel_layout=stereo:sample_rate=48000",
+              "-shortest",
+            ]),
         "-c:v", "libx264",
         "-preset", "medium",
         "-crf", "18",

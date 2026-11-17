@@ -80,7 +80,7 @@ Instagram los tapan con la descripción y los botones.
 | `video/guion.ts` | copia del tramo que se está renderizando; lo escribe `montaje.sh` |
 | Placa y bandas | `grafik/piezas/01-placa.ts`, `02-bandas.ts` |
 | Fondo y logo | `grafik/piezas/00-fondo.ts`, `video/logo.png` |
-| Plantillas nuevas | `../../plantillas-video/burbujas.ts`, `catalogo.ts`, `cortinilla.ts`, `sellos.ts` |
+| Plantillas nuevas | `../../plantillas-video/burbujas.ts`, `catalogo.ts`, `sellos.ts` |
 
 ## Pendientes
 

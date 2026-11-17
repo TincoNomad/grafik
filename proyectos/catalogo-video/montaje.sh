@@ -7,15 +7,14 @@
 # Todas las transiciones viven en los dos lados del corte. En grafik son CSS;
 # en las tomas son `overlay` de fuentes de color, porque `drawbox` en este
 # ffmpeg no acepta expresiones con tiempo y el parser no respeta comas dentro
-# de un `if()`, así que cada tramo usa una expresión lineal sin condicionales.
+# de un if(), así que cada tramo usa una expresión lineal sin condicionales.
+#
+# Las funciones compartidas (render, demo, puerta) viven en montaje-lib.sh.
 set -euo pipefail
 cd "$(dirname "$0")"
 
-# El motor vive dos carpetas arriba: grafik/proyectos/catalogo-video.
-GRAFIK="$(cd ../.. && pwd)"
-DEMOS="$HOME/Movies"
-ORO="0xd4af37"
-CARBON="0x2f2e2b"
+# shellcheck source=montaje-lib.sh
+source ./montaje-lib.sh
 
 # Idioma del reel. Cambia el guion y las bandas de texto; las tomas del demo
 # siguen siendo las mismas hasta que se regraben en el otro idioma.
@@ -26,65 +25,12 @@ SUF=""
 [ "$IDIOMA" = "en" ] && SUF="-en"
 export IDIOMA
 
-# Un escalón, un color. Los mismos de `grafik/plantillas-video/barrido.ts`.
-NIVELES=(0xe8e4d9 0xa9442b 0xd4af37 0x7a2f1d 0xf27d42 0x7a6a4f)
+# 1. Fondo, placa y bandas de texto.
+build_assets
 
-# 1. Fondo, placa y bandas de texto. Se mueven por glob y no por número:
-#    agregar una pieza nueva corre la numeración de todas.
-bun "$GRAFIK/src/build.ts" . --tamano story --out build >/dev/null
-mv build/catalogo-video-*-fondo.png video/fondo.png
-mv build/catalogo-video-*-placa.png build/placa.png
-mv build/catalogo-video-*-banda-1.png build/banda-1.png
-mv build/catalogo-video-*-banda-2.png build/banda-2.png
-mv build/catalogo-video-*-banda-3.png build/banda-3.png
-
-# 2. Tramos de motion graphics. video.ts siempre lee video/guion.ts, así que
-#    cada tramo se copia encima justo antes de renderizar.
-render() {
-  cp "video/$1" video/guion.ts
-  local ruta
-  ruta=$(bun "$GRAFIK/src/video.ts" . --fps 25 --out build/render |
-    sed -n 's/^✓ \(.*\) — .*/\1/p')
-  mv "${ruta/#\~/$HOME}" "build/$2"
-}
-
+# 2. Tramos de motion graphics.
 render "guion-a$SUF.ts" a.mp4
 render "guion-b$SUF.ts" b.mp4
-
-# 3. Tomas del demo. La placa va debajo, la grabación encima en su ventana de
-#    944x1360, la banda de texto arriba y al final las transiciones. Sin audio:
-#    el video va mudo y la música se pone al publicar.
-#    $1 video · $2 inicio · $3 banda · $4 encuadre · $5 recorte previo
-DUR=""
-demo() {
-  local encuadre="crop=944:1360:0:$4"
-  [ "$4" = "abajo" ] && encuadre="crop=944:1360:0:ih-1360"
-  [ "$4" = "arriba" ] && encuadre="crop=944:1360:0:0"
-  [ "$4" = "centro" ] && encuadre="crop=944:1360"
-
-  ffmpeg -hide_banner -v error -y \
-    -loop 1 -framerate 25 -i build/placa.png \
-    -ss "$2" -t "$DUR" -i "$DEMOS/$1" \
-    -loop 1 -framerate 25 -i "build/banda-$3.png" \
-    ${EXTRA[@]+"${EXTRA[@]}"} \
-    -filter_complex "
-      [1:v]${5}scale=944:1360:force_original_aspect_ratio=increase,$encuadre,setsar=1,fps=25,setpts=PTS-STARTPTS[d];
-      [0:v]setpts=PTS-STARTPTS[bg];
-      [bg][d]overlay=68:380[o1];
-      [o1][2:v]overlay=0:250[o2];
-      ${TRANSICION}" \
-    -map "[v]" -t "$DUR" -r 25 \
-    -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p \
-    -movflags +faststart \
-    "build/toma-$3.mp4"
-}
-
-# Las puertas son dos paneles de carbón de 540x1920: juntos cubren el lienzo
-# entero. Abren de 0 a 0.4s y cierran en los últimos 0.4s de la toma.
-puerta() {
-  EXTRA+=(-f lavfi -i "color=c=$CARBON:s=540x1920:r=25")
-  EXTRA+=(-f lavfi -i "color=c=$CARBON:s=540x1920:r=25")
-}
 
 # --- Toma 1 · catálogo (5.4s). El panel dorado con marcos internos sale al
 #     inicio y las puertas cierran al final. ---

@@ -34,6 +34,10 @@ Son distintos y se confunden:
 completo, y además trae `montaje.sh` porque mezcla tramos de grafik con
 grabaciones de pantalla.
 
+`video/` también puede traer `fondo.png`, `logo.png` y `audio.wav`. Los tres se
+buscan por nombre: si no están, no hay fondo, no hay escudo y la pista va en
+silencio. El audio real se rellena con `apad` si dura menos que el video.
+
 ## Reglas que rompen el render si se ignoran
 
 - `animation-play-state: paused` va **al final** de `wiracocha.css`. Si se sube,
@@ -46,8 +50,16 @@ grabaciones de pantalla.
   nombre, no hay registro que actualizar.
 - **Los selectores CSS van bajo la clase de la plantilla.** Todas las escenas de
   un video comparten un solo `<style>`, así que un `.barra` suelto se aplica
-  también a las demás. Ya pasó: `grafico` y `cortinilla` chocaban en `.barra` y
-  el gráfico salía deformado solo cuando las dos escenas convivían.
+  también a las demás. Ya pasó con una plantilla que se borró: dos escenas
+  chocaban en `.barra` y el gráfico salía deformado solo cuando convivían.
+- **El espacio de diseño es 1305 px de alto**, no 1920: TikTok tapa el 13% de
+  arriba y el 19% de abajo. Cuando el chequeo avisa "se sale arriba/abajo" no
+  pide mover nada, dice que no cabe.
+- Para ganar alto se escala y se desplaza (`translateY`), no se ancla abajo:
+  con `transform-origin: bottom` el bloque sin escalar ya sobresale del lienzo.
+- Si una escena lleva `transform`, su barrido se arma **fuera** de ese bloque.
+  `transform` crea un bloque contenedor y el barrido se posiciona contra él en
+  vez de contra el lienzo. `doble.ts` es el ejemplo.
 
 ## Barridos
 
