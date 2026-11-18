@@ -653,6 +653,15 @@ pendiente: zoom 2x a la región del código en esos clips.
 **`auto-editor --cut-out` no acepta `mm:ss`.** Solo segundos con unidad: `90s`,
 `1.5s`. `1m30s` falla.
 
+**`auto-editor` puede abortar a mitad de un render directo.** Con un master
+720p30 H.264 en mkv, el modo partial-lossless (el default) se cae en la marca
+23:25 del video renderizado con `Could not write packet: Invalid argument`. Se
+probó en 31.8.0 y 31.9.0, con salida `.mp4` y `.mkv`: falla igual, así que no es
+el contenedor. Deja un archivo sin `moov` que no se puede abrir, con un tamaño
+creíble. El render directo va con `--no-partial-lossless`; cuesta recodificar
+todo el video (3 min para una clase de 1h43 en un M1 Pro). `editor1.sh` no lo
+necesita: exporta un `.kdenlive`, nunca pasa por un muxer de video.
+
 ## Pendientes
 
 - `clips.sh` debería leer la lista de cortes de un `_cortes.tsv` en vez de tenerla
