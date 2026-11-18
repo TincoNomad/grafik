@@ -27,7 +27,7 @@ export default (
   font-family: Georgia, "Times New Roman", serif;
   font-size: 260px;
   line-height: 0.62;
-  color: var(--oro);
+  color: var(--acento);
   opacity: 0.45;
   margin-bottom: 10px;
 }
@@ -43,7 +43,7 @@ export default (
   font-size: 42px;
   line-height: 1.35;
   max-width: 760px;
-  color: rgba(217, 217, 217, 0.62);
+  color: color-mix(in srgb, var(--texto) 62%, transparent);
 }
 `,
 });

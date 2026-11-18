@@ -39,7 +39,7 @@ export default (
   justify-content: space-between;
   gap: 30px;
   padding: 30px 0;
-  border-bottom: 1px solid rgba(212, 175, 55, .18);
+  border-bottom: 1px solid color-mix(in srgb, var(--acento) 18%, transparent);
 }
 .lista .fila:last-child { border-bottom: 0; }
 .lista .nombre {
@@ -49,7 +49,7 @@ export default (
 }
 .lista .detalle {
   font-size: 32px;
-  color: rgba(217, 217, 217, .6);
+  color: color-mix(in srgb, var(--texto) 60%, transparent);
   text-align: right;
 }
 `,

@@ -55,8 +55,8 @@ export default (
   width: 62px;
   height: 62px;
   border-radius: 12px;
-  border: 3px solid rgba(212, 175, 55, .45);
-  background: rgba(212, 175, 55, .06);
+  border: 3px solid color-mix(in srgb, var(--acento) 45%, transparent);
+  background: color-mix(in srgb, var(--acento) 6%, transparent);
 }
 .checklist .marca {
   position: absolute;
@@ -65,7 +65,7 @@ export default (
   width: 16px;
   height: 30px;
   border-style: solid;
-  border-color: var(--verde);
+  border-color: var(--ok);
   border-width: 0 5px 5px 0;
   transform: rotate(42deg);
 }

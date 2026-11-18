@@ -32,8 +32,8 @@ export default (
       return `
     <g class="anim emerge" style="--d: ${0.5 + i * 0.12}s">
       <rect x="${x}" y="${y}" width="${CHIP.ancho}" height="${CHIP.alto}" rx="16"
-            fill="rgba(217,217,217,.05)" stroke="rgba(217,217,217,.22)" stroke-width="2" />
-      <text x="${x + CHIP.ancho / 2}" y="${y + 55}" font-size="34" fill="rgba(217,217,217,.7)"
+            fill="color-mix(in srgb, var(--texto) 5%, transparent)" stroke="color-mix(in srgb, var(--texto) 22%, transparent)" stroke-width="2" />
+      <text x="${x + CHIP.ancho / 2}" y="${y + 55}" font-size="34" fill="color-mix(in srgb, var(--texto) 70%, transparent)"
             text-anchor="middle">${ctx.esc(modulo)}</text>
     </g>`;
     })
@@ -53,14 +53,14 @@ export default (
   <svg viewBox="0 0 ${ANCHO} 720" class="lienzo-svg">
     <g class="anim emerge" style="--d: .3s">
       <rect x="20" y="20" width="848" height="470" rx="26"
-            fill="rgba(212,175,55,.04)" stroke="rgba(212,175,55,.45)" stroke-width="2.5" />
-      <text x="56" y="78" font-size="26" fill="rgba(217,217,217,.5)"
+            fill="color-mix(in srgb, var(--acento) 4%, transparent)" stroke="color-mix(in srgb, var(--acento) 45%, transparent)" stroke-width="2.5" />
+      <text x="56" y="78" font-size="26" fill="color-mix(in srgb, var(--texto) 50%, transparent)"
             letter-spacing="5" font-weight="700">TU APP</text>
     </g>
     ${chips}
     <g class="anim emerge" style="--d: 1.15s">
       <rect x="56" y="310" width="776" height="100" rx="16"
-            fill="rgba(242,125,66,.14)" stroke="var(--tono)" stroke-width="3.5" />
+            fill="color-mix(in srgb, var(--acento-2) 14%, transparent)" stroke="var(--tono)" stroke-width="3.5" />
       <text x="444" y="372" font-size="40" fill="#f2f2f2" font-weight="600"
             text-anchor="middle">${ctx.esc(resaltado)}</text>
     </g>
@@ -71,7 +71,7 @@ export default (
               pathLength="1" class="trazo anim" style="--d: 2.05s" />
     <g class="anim emerge" style="--d: 2.2s">
       <rect x="180" y="580" width="528" height="112" rx="20"
-            fill="rgba(212,175,55,.16)" stroke="#d4af37" stroke-width="3.5" />
+            fill="color-mix(in srgb, var(--acento) 16%, transparent)" stroke="#d4af37" stroke-width="3.5" />
       <text x="444" y="648" font-size="40" fill="#d9d9d9" font-weight="600"
             text-anchor="middle">${ctx.esc(motor)}</text>
     </g>
@@ -84,7 +84,7 @@ export default (
   margin-top: 34px;
   font-size: 30px;
   line-height: 1.4;
-  color: rgba(217, 217, 217, .55);
+  color: color-mix(in srgb, var(--texto) 55%, transparent);
 }
 `,
   };

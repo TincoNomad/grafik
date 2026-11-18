@@ -31,7 +31,7 @@ export default (
   const lineas = ctx.esc(datos.texto).split("\n");
   const cuerpo = lineas
     .map((linea, i) =>
-      i === lineas.length - 1 && lineas.length > 1 ? `<span class="oro">${linea}</span>` : linea
+      i === lineas.length - 1 && lineas.length > 1 ? `<span class="acento">${linea}</span>` : linea
     )
     .join("<br>");
 
@@ -51,8 +51,8 @@ export default (
 .catalogo .titulo { font-size: 76px; }
 .icono { margin: 26px 0 8px; }
 .celda {
-  fill: rgba(212, 175, 55, .12);
-  stroke: var(--oro);
+  fill: color-mix(in srgb, var(--acento) 12%, transparent);
+  stroke: var(--acento);
   stroke-width: 3;
   transform-box: fill-box;
   transform-origin: center;

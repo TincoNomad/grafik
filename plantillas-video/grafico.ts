@@ -50,7 +50,7 @@ export default (
   flex: none;
   width: 200px;
   font-size: 34px;
-  color: rgba(217, 217, 217, 0.72);
+  color: color-mix(in srgb, var(--texto) 72%, transparent);
   text-align: right;
 }
 .grafico .pista {
@@ -58,13 +58,13 @@ export default (
   height: 48px;
   overflow: hidden;
   border-radius: 6px;
-  background: rgba(217, 217, 217, 0.06);
+  background: color-mix(in srgb, var(--texto) 6%, transparent);
 }
 .grafico .graf-barra {
   display: block;
   height: 100%;
   border-radius: 6px;
-  background: rgba(217, 217, 217, 0.26);
+  background: color-mix(in srgb, var(--texto) 26%, transparent);
   transform: translateX(-100%);
 }
 /* Clase suelta a propósito: .escena .anim tiene dos clases y le gana el
@@ -72,12 +72,12 @@ export default (
 .barra-corre {
   animation: entraBarra 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-.grafico .graf-barra.fuerte { background: var(--tono, var(--oro)); }
+.grafico .graf-barra.fuerte { background: var(--tono, var(--acento)); }
 .grafico .nota {
   margin-top: 46px;
   font-size: 30px;
   letter-spacing: 0.06em;
-  color: rgba(217, 217, 217, 0.45);
+  color: color-mix(in srgb, var(--texto) 45%, transparent);
 }
 @keyframes entraBarra {
   to {

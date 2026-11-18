@@ -57,7 +57,7 @@ export default (
 .sello svg { flex: none; }
 .sello path {
   fill: none;
-  stroke: var(--oro);
+  stroke: var(--acento);
   stroke-width: 3.2;
   stroke-linecap: round;
   stroke-linejoin: round;

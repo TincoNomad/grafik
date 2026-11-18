@@ -31,8 +31,10 @@ pipelines/         scripts de shell: corte de clases y clips verticales
 su propio chequeo: `bun src/formas.ts`.
 
 Un proyecto vive en `proyectos/<nombre>/` y tiene `video/guion.ts` más sus
-assets. `proyectos/catalogo-video` es el ejemplo completo: mezcla tramos de
-grafik con grabaciones de pantalla y por eso trae su propio `montaje.sh`.
+assets. Si trae un `tema.css` al lado del `guion.ts`, ese reemplaza la paleta por
+defecto: ver [Tu marca](#tu-marca-temacss). `proyectos/catalogo-video` es el
+ejemplo completo: mezcla tramos de grafik con grabaciones de pantalla y por eso
+trae su propio `montaje.sh`.
 
 ---
 
@@ -432,6 +434,113 @@ bun src/prueba.ts
 
 Crea un proyecto temporal, renderiza una pieza y revisa que el PNG salga con el
 tamaño correcto.
+
+---
+
+# Tu marca y tus plantillas
+
+Tres formas de hacer el repo tuyo sin tocar el motor.
+
+## Tu marca: `tema.css`
+
+Las plantillas no conocen colores de marca, solo roles. Los valores por defecto
+están en `src/wiracocha.css`; un proyecto los reemplaza dejando un `tema.css`
+junto a su `guion.ts`:
+
+```
+mi-video/
+  video/
+    guion.ts
+  tema.css        ← opcional: redefine la paleta
+```
+
+```css
+/* tema.css */
+:root {
+  --acento: #2563eb;
+  --acento-2: #7c3aed;
+  --acento-3: #db2777;
+  --fondo: #0b0b0f;
+  --superficie: #16161d;
+  --texto: #e5e7eb;
+  --ok: #22c55e;
+  --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+```
+
+Se inyecta **después** de la paleta por defecto, así que solo redefines lo que
+quieres cambiar. Las clases de layout siguen viniendo de `wiracocha.css`.
+
+| Variable | Para qué |
+|---|---|
+| `--acento` | títulos, enlaces, barras |
+| `--acento-2` | diagramas y énfasis |
+| `--acento-3` | escena de cierre |
+| `--fondo` | fondo del lienzo |
+| `--superficie` | placa de contraste |
+| `--texto` | texto corrido |
+| `--ok` | correcto, confirmado |
+| `--sans` | pila tipográfica |
+
+Una fuente propia va en el mismo archivo con su `@font-face` y la ruta absoluta
+del `.woff2`: el HTML se sirve por `file://`, así que no hay base URL.
+
+**Excepciones:** tres lugares no salen del tema y es a propósito. `barrido`
+lleva su paleta sincronizada con `pipelines/montaje.sh`, que pinta la otra mitad
+de la escalera con ffmpeg y no lee CSS. `bot` es una maqueta de chat con sus
+propios grises. Los dibujos de `src/pixel.ts` son ilustración, no color de marca.
+
+## Añadir una plantilla
+
+Una plantilla es un archivo en `plantillas-video/`. `video.ts` la busca por
+nombre, así que no hay registro que actualizar:
+
+```ts
+// plantillas-video/mi-plantilla.ts
+import type { Ctx } from "../render.ts";
+
+export default (
+  datos: { texto: string; rotulo?: string; duracion?: number },
+  ctx: Ctx,
+) => ({
+  nombre: "mi-plantilla",
+  duracion: datos.duracion ?? 4,
+  html: `<div class="lleno">
+  <div class="texto">
+    <div class="rotulo anim aparece" style="--d: .1s">${ctx.esc(datos.rotulo ?? "")}</div>
+    <h1 class="titulo anim entra" style="--d: .3s">${ctx.esc(datos.texto)}</h1>
+  </div>
+</div>`,
+});
+```
+
+Reglas:
+
+- **Lienzo de 1080x1920.** Debajo de y=1620 queda la descripción, la música y los
+  botones de TikTok e Instagram.
+- **La animación va en una clase** (`.entra`, `.aparece`, `.emerge`, `.trazo`) y
+  el cuándo en `--d`. Nunca en `style` inline: el shorthand reinicia el delay.
+  El detalle está en [Cómo se anima](#cómo-se-anima).
+- **Una animación nueva** es un `@keyframes` más una clase en `src/wiracocha.css`.
+- **Escapa el texto con `ctx.esc()`.** El HTML se inyecta crudo.
+- **Colores por rol**, no por hex: `var(--acento)`, no `#d4af37`.
+
+## Añadir imágenes
+
+Los assets son por proyecto y se buscan por nombre en `video/`:
+
+| Archivo | Uso |
+|---|---|
+| `fondo.png` | fondo del lienzo, recortado con `cover` |
+| `logo.png` | escudo en la escena de cierre |
+| `audio.wav` | banda sonora. También `mp3` y `m4a` |
+
+Un archivo fuera de esa lista va en los `datos` del guion y la plantilla lo
+referencia con `ctx.asset("ruta.png")`.
+
+Para una biblioteca de imágenes compartidas todavía no hay carpeta. Antes de
+crearla hay que decidir tamaño, formato y licencia de lo que se acepte, o llegan
+PNGs de 4000 px sin dueño.
 
 ---
 

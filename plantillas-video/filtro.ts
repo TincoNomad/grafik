@@ -23,7 +23,7 @@ export default (
   const lineas = ctx.esc(datos.texto).split("\n");
   const cuerpo = lineas
     .map((linea, i) =>
-      i === lineas.length - 1 && lineas.length > 1 ? `<span class="oro">${linea}</span>` : linea
+      i === lineas.length - 1 && lineas.length > 1 ? `<span class="acento">${linea}</span>` : linea
     )
     .join("<br>");
 
@@ -61,19 +61,19 @@ export default (
 
 .camino { width: 620px; height: 636px; display: block; align-self: center; margin-top: 6px; }
 .camino path, .camino circle { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.camino .tronco { stroke: rgba(217, 217, 217, .75); stroke-width: 6; }
-.mala path, .mala circle { stroke: rgba(217, 217, 217, .5); stroke-width: 6; }
-.buena .rama, .buena circle { stroke: var(--oro); stroke-width: 6; }
-.buena .check { stroke: var(--oro); stroke-width: 6; }
+.camino .tronco { stroke: color-mix(in srgb, var(--texto) 75%, transparent); stroke-width: 6; }
+.mala path, .mala circle { stroke: color-mix(in srgb, var(--texto) 50%, transparent); stroke-width: 6; }
+.buena .rama, .buena circle { stroke: var(--acento); stroke-width: 6; }
+.buena .check { stroke: var(--acento); stroke-width: 6; }
 .camino text {
-  fill: rgba(217, 217, 217, .5);
+  fill: color-mix(in srgb, var(--texto) 50%, transparent);
   font-size: 32px;
   font-family: var(--sans);
   text-anchor: middle;
   letter-spacing: .04em;
 }
 .mala { animation: cae .45s ease-in both; animation-delay: calc(.95s - var(--t, 0) * 1s); animation-play-state: paused; }
-.buena text { fill: var(--oro); }
+.buena text { fill: var(--acento); }
 
 /* El trazo de wiracocha dura 1.1s; aquí el camino tiene que estar listo antes
    de que entre el texto. */

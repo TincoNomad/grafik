@@ -52,9 +52,9 @@ export default (
   font-weight: 700;
   letter-spacing: .16em;
   text-transform: uppercase;
-  color: var(--oro);
+  color: var(--acento);
 }
-.cabecera.roja, .bloque.roja .cabecera { color: var(--naranja); }
+.cabecera.roja, .bloque.roja .cabecera { color: var(--acento-2); }
 .bloque ul { list-style: none; display: flex; flex-direction: column; gap: 20px; margin-top: 24px; }
 .bloque li { font-size: 54px; line-height: 1.15; padding-left: 34px; position: relative; }
 .bloque li::before {
@@ -64,13 +64,13 @@ export default (
   top: .58em;
   width: 16px;
   height: 4px;
-  background: rgba(217, 217, 217, .45);
+  background: color-mix(in srgb, var(--texto) 45%, transparent);
 }
-.bloque.roja li::before { background: var(--naranja); }
+.bloque.roja li::before { background: var(--acento-2); }
 .division {
   height: 1px;
   margin: 44px 0;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, .35), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--acento) 35%, transparent), transparent);
 }
 `,
   };

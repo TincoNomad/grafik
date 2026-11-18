@@ -95,7 +95,7 @@ export default (
 .cierre .rotulo { font-size: 41px; margin-bottom: 26px; }
 .cierre .titulo { margin: 0; }
 .cierre .filete { margin: 30px auto 0; }
-.cierre .cta { margin-top: 26px; font-size: 46px; letter-spacing: .06em; color: var(--oro); }
+.cierre .cta { margin-top: 26px; font-size: 46px; letter-spacing: .06em; color: var(--acento); }
 /* Las redes son un pie, no una acción: mismo gris que el texto chico y sin
    cajas. El oro se queda para el WhatsApp. */
 .cierre .redes {
@@ -104,7 +104,7 @@ export default (
   justify-content: center;
   gap: 14px;
   margin-top: 40px;
-  color: rgba(217, 217, 217, .62);
+  color: color-mix(in srgb, var(--texto) 62%, transparent);
 }
 .cierre .red {
   width: 38px;

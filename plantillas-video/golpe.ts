@@ -40,16 +40,16 @@ export default (
   font-weight: 800;
   line-height: .8;
   letter-spacing: -.055em;
-  color: var(--hueso);
+  color: var(--texto);
   transform-box: border-box;
 }
-.golpe .punto { font-size: 250px; color: var(--oro); }
+.golpe .punto { font-size: 250px; color: var(--acento); }
 .golpe .pie {
   margin-top: 40px;
   font-size: 40px;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: rgba(217, 217, 217, .55);
+  color: color-mix(in srgb, var(--texto) 55%, transparent);
 }
 .golpe.con-dibujo .palabra { font-size: 330px; }
 .golpe.con-dibujo .punto { font-size: 160px; }

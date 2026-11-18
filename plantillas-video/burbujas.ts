@@ -26,7 +26,7 @@ export default (
   const lineas = ctx.esc(datos.texto).split("\n");
   const cuerpo = lineas
     .map((linea, i) =>
-      i === lineas.length - 1 && lineas.length > 1 ? `<span class="oro">${linea}</span>` : linea
+      i === lineas.length - 1 && lineas.length > 1 ? `<span class="acento">${linea}</span>` : linea
     )
     .join("<br>");
 
@@ -47,10 +47,10 @@ export default (
   align-self: flex-start;
   padding: 24px 34px;
   border-radius: 30px 30px 30px 10px;
-  background: rgba(217, 217, 217, .11);
-  border: 1px solid rgba(217, 217, 217, .16);
+  background: color-mix(in srgb, var(--texto) 11%, transparent);
+  border: 1px solid color-mix(in srgb, var(--texto) 16%, transparent);
   font-size: 44px;
-  color: var(--hueso);
+  color: var(--texto);
 }
 .globo:nth-child(even) { align-self: flex-end; border-radius: 30px 30px 10px 30px; }
 `,

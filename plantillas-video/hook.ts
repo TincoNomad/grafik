@@ -18,7 +18,7 @@ export default (
   const cuerpo = lineas
     .map((linea, i) => {
       // La última línea se pinta en oro: da un punto de entrada a la vista.
-      if (i === lineas.length - 1 && lineas.length > 1) return `<span class="oro">${linea}</span>`;
+      if (i === lineas.length - 1 && lineas.length > 1) return `<span class="acento">${linea}</span>`;
       return linea;
     })
     .join("<br>");

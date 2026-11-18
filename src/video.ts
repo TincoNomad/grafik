@@ -112,12 +112,18 @@ const ctxVideo = { ...ctx, logo: rutaLogo ? `file://${rutaLogo}` : null };
 const importar = async (ruta: string) => (await import(pathToFileURL(ruta).href)).default;
 
 // Un acento por escena, no tres compitiendo. La barra de la tarjeta lo toma.
-const TONOS = { oro: "#d4af37", naranja: "#f27d42", terracota: "#a9442b" } as const;
+// Se resuelve por variable CSS, no por hex, para que un tema.css propio cambie
+// la paleta sin tocar este archivo.
+const TONOS = {
+  primario: "var(--acento)",
+  secundario: "var(--acento-2)",
+  cierre: "var(--acento-3)",
+} as const;
 const TONO_POR_DEFECTO: Record<string, keyof typeof TONOS> = {
-  hook: "oro",
-  concepto: "oro",
-  diagrama: "naranja",
-  cierre: "terracota",
+  hook: "primario",
+  concepto: "primario",
+  diagrama: "secundario",
+  cierre: "cierre",
 };
 
 const guion: EntradaGuion[] = await importar(rutaGuion);
@@ -155,8 +161,8 @@ for (const entrada of entradas) {
   }
 
   const pedido = datos.tono as string | undefined;
-  const nombreTono = pedido ?? TONO_POR_DEFECTO[plantilla] ?? "oro";
-  const tono = TONOS[nombreTono as keyof typeof TONOS] ?? TONOS.oro;
+  const nombreTono = pedido ?? TONO_POR_DEFECTO[plantilla] ?? "primario";
+  const tono = TONOS[nombreTono as keyof typeof TONOS] ?? TONOS.primario;
 
   const armar = await importar(ruta);
   const escena: EscenaVideo = await armar({ ...datos, duracion }, ctxVideo);
@@ -191,10 +197,17 @@ for (const meta of metadatos) {
   }
 }
 
+// Manual de marca del proyecto: si hay un tema.css junto al guion, se inyecta
+// después de la paleta por defecto y la sobrescribe por cascada. Solo redefine
+// variables; las clases de layout siguen viniendo de wiracocha.css.
+const rutaTema = join(proyecto, "tema.css");
+const cssTema = existsSync(rutaTema) ? readFileSync(rutaTema, "utf8") : "";
+
 const documento = (): string => `<!doctype html>
 <html lang="es"><head><meta charset="utf-8">
 <style>${readFileSync(join(import.meta.dir, "base.css"), "utf8")}</style>
 <style>${readFileSync(join(import.meta.dir, "wiracocha.css"), "utf8")}</style>
+<style>${cssTema}</style>
 <style>${cssEscenas.join("\n")}</style>
 <style>
   html, body { background: #000; }

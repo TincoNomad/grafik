@@ -23,7 +23,7 @@ export default (
 
   const cajas = YS.map((y, i) => {
     const esRust = i === datos.rust;
-    const relleno = esRust ? "rgba(212,175,55,.16)" : "rgba(212,175,55,.07)";
+    const relleno = esRust ? "color-mix(in srgb, var(--acento) 16%, transparent)" : "color-mix(in srgb, var(--acento) 7%, transparent)";
     const grosor = esRust ? 4 : 2.5;
     const marca = esRust
       ? `<text x="${X + CAJA.ancho / 2 - 28}" y="${y + 52}" font-size="28"

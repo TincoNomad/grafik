@@ -56,11 +56,11 @@ export default (
   flex: 1;
   height: 64px;
   border-radius: 12px;
-  border: 3px solid rgba(212, 175, 55, .28);
+  border: 3px solid color-mix(in srgb, var(--acento) 28%, transparent);
   background: transparent;
 }
-.barras .nucleos i.on { background: var(--tono, var(--oro)); border-color: var(--tono, var(--oro)); }
-.barras .cuenta { font-size: 28px; white-space: nowrap; color: rgba(217, 217, 217, .55); }
+.barras .nucleos i.on { background: var(--tono, var(--acento)); border-color: var(--tono, var(--acento)); }
+.barras .cuenta { font-size: 28px; white-space: nowrap; color: color-mix(in srgb, var(--texto) 55%, transparent); }
 `,
   };
 };

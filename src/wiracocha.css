@@ -2,14 +2,26 @@
    Los colores son los de wiracocha-web/src/styles/tokens.css, sin inventar nada.
    Las fuentes son la pila del sistema porque el sitio tampoco carga Oswald. */
 
+/* Paleta por roles, no por marca. Un proyecto reemplaza estas variables con su
+   propio tema.css sin tocar las plantillas.
+   Los valores por defecto son la identidad de Wiracocha. */
+
 :root {
-  --oro: #d4af37;
-  --naranja: #f27d42;
-  --terracota: #a9442b;
+  /* acento principal: títulos, enlaces, barras */
+  --acento: #d4af37;
+  /* segundo acento: diagramas, énfasis */
+  --acento-2: #f27d42;
+  /* tercer acento: cierre, alertas */
+  --acento-3: #a9442b;
+  /* fondo del lienzo */
   --fondo: #2f2e2b;
-  --hueso: #d9d9d9;
-  --carbon: #2e1e1a;
-  --verde: #3ecf6a;
+  /* placa de contraste sobre el fondo */
+  --superficie: #2e1e1a;
+  /* texto corrido */
+  --texto: #d9d9d9;
+  /* correcto, confirmado */
+  --ok: #3ecf6a;
+  /* pila tipográfica; se cambia junto con un @font-face propio */
   --sans: ui-sans-serif, system-ui, -apple-system, "Inter", sans-serif;
 }
 
@@ -22,7 +34,7 @@
   background-image: var(--fondo-img, none);
   background-size: cover;
   background-position: center;
-  color: var(--hueso);
+  color: var(--texto);
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
 }
@@ -42,10 +54,10 @@
      quedan 400px muertos arriba y 400 abajo. */
   min-height: 1400px;
   border-radius: 34px;
-  border: 1px solid rgba(212, 175, 55, 0.22);
+  border: 1px solid color-mix(in srgb, var(--acento) 22%, transparent);
   /* Un solo acento por escena, en el borde izquierdo. El color lo pone la
      escena con `--tono`: tres bordes de colores compitiendo no dejan jerarquía. */
-  border-left: 6px solid var(--tono, var(--oro));
+  border-left: 6px solid var(--tono, var(--acento));
   background: var(--fondo);
   overflow: hidden;
 }
@@ -126,7 +138,7 @@
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--oro);
+  color: var(--acento);
 }
 
 .titulo {
@@ -142,19 +154,16 @@
   font-weight: 400;
   line-height: 1.25;
   margin-top: 32px;
-  color: rgba(217, 217, 217, 0.72);
+  color: color-mix(in srgb, var(--texto) 72%, transparent);
 }
 
 .chico {
   font-size: 34px;
-  color: rgba(217, 217, 217, 0.55);
+  color: color-mix(in srgb, var(--texto) 55%, transparent);
 }
 
-.oro {
-  color: var(--oro);
-}
-.naranja {
-  color: var(--naranja);
+.acento {
+  color: var(--acento);
 }
 
 /* El filete que subraya una idea. Crece de izquierda a derecha. */
@@ -162,7 +171,7 @@
   height: 4px;
   width: 180px;
   margin-top: 44px;
-  background: var(--oro);
+  background: var(--acento);
   transform-origin: left center;
   animation: barre 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -203,7 +212,7 @@
   from {
     opacity: 0;
     transform: translateY(70px);
-    color: var(--oro);
+    color: var(--acento);
   }
   to {
     opacity: 1;
@@ -280,11 +289,11 @@
 }
 
 .codigo .clave {
-  color: var(--naranja);
+  color: var(--acento-2);
 }
 
 .codigo .com {
-  color: rgba(217, 217, 217, 0.4);
+  color: color-mix(in srgb, var(--texto) 40%, transparent);
 }
 
 /* Congelar va al final a propósito. Los `animation` de arriba son un shorthand
@@ -344,7 +353,7 @@
   top: 0;
   width: 1080px;
   height: 1920px;
-  background: var(--oro);
+  background: var(--acento);
   /* Las propiedades van por separado y no con el shorthand `animation`:
      el shorthand borraría el delay. */
   animation-timing-function: linear;
