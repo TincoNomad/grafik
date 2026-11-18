@@ -132,7 +132,7 @@ naranja, `cierre` en terracota.
 
 | Plantilla | Campos | Para |
 |---|---|---|
-| `hook` | `texto`, `rotulo`, `acento` | La primera frase. La última línea sale en oro |
+| `hook` | `texto`, `rotulo`, `acento` | La primera frase. La última línea sale en el color de acento |
 | `concepto` | `texto`, `sub`, `rotulo` | Una idea y su explicación |
 | `diagrama` | `pasos[3]`, `texto`, `rotulo` | Tres pasos con flechas que se dibujan (SVG) |
 | `cierre` | `texto`, `cta`, `rotulo`, `redes` | Conclusión, llamada a la acción y redes |
@@ -489,6 +489,15 @@ del `.woff2`: el HTML se sirve por `file://`, así que no hay base URL.
 lleva su paleta sincronizada con `pipelines/montaje.sh`, que pinta la otra mitad
 de la escalera con ffmpeg y no lee CSS. `bot` es una maqueta de chat con sus
 propios grises. Los dibujos de `src/pixel.ts` son ilustración, no color de marca.
+
+### Si vienes con un manual de marca
+
+Los colores tienen que estar en hexadecimal. Si el manual solo trae muestras o
+nombres ("azul corporativo"), el valor falta: el resultado va a ser una
+aproximación y no el color real, y eso en un video se nota.
+
+La plantilla para llenar está en [`skills/grafik/marca.md`](skills/grafik/marca.md),
+y el skill que usan los agentes en [`skills/grafik/SKILL.md`](skills/grafik/SKILL.md).
 
 ## Añadir una plantilla
 
